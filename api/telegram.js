@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { chat_id, text, disable_web_page_preview = true } = await req.body || {};
+    const { chat_id, text, disable_web_page_preview = true } = req.body || {};
     if (!chat_id || !text) return res.status(400).json({ ok: false, error: 'chat_id and text are required' });
 
     const token = process.env.TELEGRAM_BOT_TOKEN;
@@ -20,8 +20,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({ chat_id, text, disable_web_page_preview }),
     });
     const data = await tgResp.json();
-    const status = data.ok ? 200 : 500;
-    return res.status(status).json(data);
+    return res.status(data.ok ? 200 : 500).json(data);
   } catch (e) {
     return res.status(500).json({ ok: false, error: e?.message || 'internal error' });
   }
